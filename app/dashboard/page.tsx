@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { useStore } from "@/store/useStore"
 import { Button } from "@/components/ui/button"
-import { Plus, LogOut } from "lucide-react"
+import { Plus, LogOut, MessageSquare } from "lucide-react"
 import { AddHabitDialog } from "@/components/AddHabitDialog"
 import { HabitCard } from "@/components/HabitCard"
+import { HabitGridLogo } from "@/components/HabitGridLogo"
+import { MilestoneSection } from "@/components/MilestoneSection"
 
 export default function Dashboard() {
   const router = useRouter()
@@ -19,7 +21,7 @@ export default function Dashboard() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        router.push("/")
+        router.push("/auth")
         return
       }
 
@@ -68,28 +70,50 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#2a2d3a] p-6 pb-20 animate-fade-in">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <h1 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-              {habits.length} HABIT{habits.length !== 1 ? 'S' : ''}
-            </h1>
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <HabitGridLogo className="w-7 h-7 text-white" />
+              <h1 className="text-2xl font-bold text-white">HabitGrid</h1>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                {habits.length} HABIT{habits.length !== 1 ? 'S' : ''}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAddDialog(true)}
+                className="h-8 w-8 text-gray-400 hover:text-white"
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setShowAddDialog(true)}
-              className="h-8 w-8 text-gray-400 hover:text-white"
+              onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform", "_blank")}
+              className="text-gray-400 hover:text-white"
+              title="Send Feedback"
             >
-              <Plus className="h-5 w-5" />
+              <MessageSquare className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSignOut}
+              className="text-gray-400 hover:text-white"
+              title="Sign Out"
+            >
+              <LogOut className="h-5 w-5" />
             </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="text-gray-400 hover:text-white"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
         </div>
+
+        {habits.length > 0 && (
+          <MilestoneSection habits={habits} checkIns={checkIns} />
+        )}
 
         {habits.length === 0 ? (
           <div className="text-center py-12 text-gray-400">

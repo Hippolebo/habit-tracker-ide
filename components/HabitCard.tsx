@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { MoreVertical } from "lucide-react"
+import { MilestoneProgress } from "@/components/MilestoneProgress"
 import {
   getYearWeeks,
   getMonthLabels,
@@ -25,6 +26,7 @@ interface HabitCardProps {
 export function HabitCard({ habit, checkIns, onUpdate }: HabitCardProps) {
   const [loading, setLoading] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
+  const [justCheckedIn, setJustCheckedIn] = useState(false)
 
   const habitCheckIns = checkIns || []
   const checkInDates = new Set(habitCheckIns.map((c) => c.date))
@@ -67,6 +69,9 @@ export function HabitCard({ habit, checkIns, onUpdate }: HabitCardProps) {
         ])
 
       if (!error) {
+        // Trigger celebration animation
+        setJustCheckedIn(true)
+        setTimeout(() => setJustCheckedIn(false), 1000)
         onUpdate()
       }
     }
@@ -98,22 +103,33 @@ export function HabitCard({ habit, checkIns, onUpdate }: HabitCardProps) {
             <span className="text-2xl">{habit.emoji}</span>
             <h3 className="font-medium text-base text-gray-200">{habit.name}</h3>
           </div>
-          <button
-            onClick={handleCheckInToday}
-            disabled={loading}
-            className={cn(
-              "h-8 w-8 rounded border-2 flex items-center justify-center transition-all",
-              isTodayChecked
-                ? "bg-green-500 border-green-500"
-                : "bg-transparent border-gray-500 hover:border-gray-400"
+          <div className="relative">
+            <button
+              onClick={handleCheckInToday}
+              disabled={loading}
+              className={cn(
+                "h-8 w-8 rounded border-2 flex items-center justify-center transition-all duration-300 relative",
+                isTodayChecked
+                  ? "bg-green-500 border-green-500"
+                  : "bg-transparent border-gray-500 hover:border-gray-400",
+                justCheckedIn && "animate-bounce",
+                "active:scale-95 hover:scale-105"
+              )}
+            >
+              {isTodayChecked && (
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </button>
+            {justCheckedIn && (
+              <>
+                <span className="absolute -top-1 -right-1 text-xs animate-ping">✨</span>
+                <span className="absolute -bottom-1 -left-1 text-xs animate-ping" style={{ animationDelay: '150ms' }}>⭐</span>
+                <span className="absolute -top-1 -left-1 text-xs animate-ping" style={{ animationDelay: '300ms' }}>💫</span>
+              </>
             )}
-          >
-            {isTodayChecked && (
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            )}
-          </button>
+          </div>
         </div>
 
         {showMenu && (
@@ -141,6 +157,8 @@ export function HabitCard({ habit, checkIns, onUpdate }: HabitCardProps) {
             <p className="text-xs text-gray-400 mt-1">Check-ins</p>
           </div>
         </div>
+
+        <MilestoneProgress currentValue={currentStreak} milestoneType="streak" />
 
         <div className="space-y-2">
           <div className="flex justify-between px-8 text-xs text-gray-400">

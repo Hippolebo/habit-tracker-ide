@@ -4,135 +4,158 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { HabitGridDemo } from "@/components/HabitGridDemo"
+import { HabitGridLogo } from "@/components/HabitGridLogo"
 
 export default function Home() {
   const router = useRouter()
-  const [isLogin, setIsLogin] = useState(true)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
         router.push("/dashboard")
+      } else {
+        setLoading(false)
       }
     }
     checkUser()
   }, [router])
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-
-    try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
-        if (error) throw error
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        })
-        if (error) throw error
-      }
-      router.push("/dashboard")
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleGoogleAuth = async () => {
-    setLoading(true)
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      })
-      if (error) throw error
-    } catch (err: any) {
-      setError(err.message)
-      setLoading(false)
-    }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-black animate-fade-in">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl text-center">Habit Tracker</CardTitle>
-          <CardDescription className="text-center">
-            {isLogin ? "Sign in to your account" : "Create a new account"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    <div className="min-h-screen bg-black text-white animate-fade-in">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-16">
+          <div className="flex items-center space-x-2">
+            <HabitGridLogo className="w-8 h-8 text-white" />
+            <h1 className="text-2xl font-bold">HabitGrid</h1>
+          </div>
           <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleAuth}
-            disabled={loading}
+            variant="ghost"
+            onClick={() => router.push("/auth")}
+            className="text-gray-400 hover:text-white"
           >
-            Continue with Google
+            Sign In
           </Button>
+        </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-800" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black px-2 text-gray-400">Or</span>
-            </div>
+        {/* Hero Section */}
+        <div className="text-center space-y-6 mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
+            Build better habits,
+            <br />
+            <span className="text-gray-400">one day at a time</span>
+          </h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Track your yearly habits with a beautiful 52-week grid. See your progress, maintain streaks, and build consistency.
+          </p>
+          <div className="flex items-center justify-center gap-4 pt-4">
+            <Button
+              size="lg"
+              onClick={() => router.push("/auth")}
+              className="text-base px-8"
+            >
+              Get Started
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => router.push("/auth")}
+              className="text-base px-8"
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
+
+        {/* Demo Section */}
+        <div className="space-y-8">
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl font-semibold">Your year at a glance</h3>
+            <p className="text-gray-400">
+              Every check-in appears as a green square. Watch your progress grow over time.
+            </p>
           </div>
 
-          <form onSubmit={handleEmailAuth} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
-            </Button>
-          </form>
+          <div className="flex justify-center">
+            <HabitGridDemo />
+          </div>
+        </div>
 
-          <div className="text-center text-sm">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-gray-400 hover:text-white underline"
+        {/* Features Section */}
+        <div className="grid md:grid-cols-3 gap-8 mt-24">
+          <div className="space-y-2">
+            <div className="text-4xl mb-4">📊</div>
+            <h4 className="text-xl font-semibold">Track Your Streaks</h4>
+            <p className="text-gray-400">
+              See your current and longest streaks. Build momentum with consistent daily habits.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <div className="text-4xl mb-4">📅</div>
+            <h4 className="text-xl font-semibold">52-Week Visualization</h4>
+            <p className="text-gray-400">
+              Beautiful year-long heatmap shows your entire habit history at a glance.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <div className="text-4xl mb-4">📈</div>
+            <h4 className="text-xl font-semibold">Consistency Metrics</h4>
+            <p className="text-gray-400">
+              Track your consistency percentage and total check-ins for each habit.
+            </p>
+          </div>
+        </div>
+
+        {/* Feedback Section */}
+        <div className="text-center mt-24 py-16 bg-gradient-to-b from-transparent via-gray-900/50 to-transparent rounded-lg">
+          <h3 className="text-3xl font-bold mb-4">Help me make this app better</h3>
+          <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
+            HabitGrid is in beta. Your feedback is incredibly valuable and will directly shape the future of this app.
+          </p>
+          <Button
+            size="lg"
+            onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform", "_blank")}
+            className="text-base px-8"
+          >
+            Share Your Feedback
+          </Button>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-24 pt-12 border-t border-gray-800 space-y-3">
+          <p className="text-gray-400 text-sm">
+            HabitGrid - Track your yearly habits with beautiful visualizations
+          </p>
+          <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 underline"
             >
-              {isLogin
-                ? "Don't have an account? Sign up"
-                : "Already have an account? Sign in"}
+              Feedback
+            </a>
+            <span>•</span>
+            <button
+              onClick={() => router.push("/privacy")}
+              className="hover:text-gray-300 underline"
+            >
+              Privacy Policy
             </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

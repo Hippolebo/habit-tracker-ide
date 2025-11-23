@@ -5,8 +5,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Habit Tracker",
-  description: "Track your yearly habits",
+  title: "HabitGrid - Track Your Yearly Habits",
+  description: "Build better habits with beautiful 52-week visualizations. Track your progress, maintain streaks, and build consistency.",
 }
 
 export default function RootLayout({
