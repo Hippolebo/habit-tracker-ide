@@ -125,10 +125,16 @@ export default function Home() {
           </p>
           <Button
             size="lg"
-            onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform", "_blank")}
+            asChild
             className="text-base px-8"
           >
-            Share Your Feedback
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Share Your Feedback
+            </a>
           </Button>
         </div>
 

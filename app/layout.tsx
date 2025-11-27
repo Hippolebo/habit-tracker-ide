@@ -30,14 +30,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://habitgrid.eu'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.habitgrid.eu'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: "HabitGrid - Track Your Yearly Habits",
     description: "Free habit tracker with 52-week yearly heatmap. Track your habits, maintain streaks, and visualize your progress.",
-    url: 'https://habitgrid.eu',
+    url: 'https://www.habitgrid.eu',
     siteName: 'HabitGrid',
     locale: 'en_US',
     type: 'website',
@@ -82,7 +82,7 @@ export default function RootLayout({
     '@type': 'WebApplication',
     name: 'HabitGrid',
     description: 'Free habit tracker with 52-week yearly heatmap. Track your habits, maintain streaks, and visualize your progress.',
-    url: 'https://habitgrid.eu',
+    url: 'https://www.habitgrid.eu',
     applicationCategory: 'ProductivityApplication',
     operatingSystem: 'Web',
     offers: {
@@ -98,7 +98,7 @@ export default function RootLayout({
       'Mobile-friendly interface',
       'Private and secure'
     ],
-    screenshot: 'https://habitgrid.eu/og-image.png',
+    screenshot: 'https://www.habitgrid.eu/og-image.png',
   }
 
   return (

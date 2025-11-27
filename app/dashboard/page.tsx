@@ -93,11 +93,17 @@ export default function Dashboard() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform", "_blank")}
+              asChild
               className="text-gray-400 hover:text-white"
-              title="Send Feedback"
             >
-              <MessageSquare className="h-5 w-5" />
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfZRyYNFkEu1iL-KZg3mOxw6r-Zhskn7xRC9c-Qh8Xsweh3NA/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Send Feedback"
+              >
+                <MessageSquare className="h-5 w-5" />
+              </a>
             </Button>
             <Button
               variant="ghost"
